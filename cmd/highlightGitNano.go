@@ -84,13 +84,15 @@ color blue "#"
 
 // gitForNanoCmd represents the gitForNano command
 var gitForNanoCmd = &cobra.Command{
-	Use:   "git-nano-highlight",
-	Short: "Installs git commit message syntax highlighting for nano",
+	Use: "nano",
+
+	Short:                  "Installs git commit message syntax highlighting for nano",
+	BashCompletionFunction: "__dev_git_nano_highlight",
 	Run: func(cmd *cobra.Command, args []string) {
 		f, _ := cmd.Flags().GetBool("force")
-		s := spinner.New(spinner.CharSets[11], time.Second / 10)
+		s := spinner.New(spinner.CharSets[11], time.Second/10)
 		s.Suffix = " Installing highlighting file"
-		s.Start();
+		s.Start()
 		file, err := installHighlighting(f)
 		if err != nil {
 			s.Stop()
@@ -150,13 +152,12 @@ func installNanorc(rf string) error {
 	incl := fmt.Sprintf(`include "%s" # automatically added by dev`, rf)
 
 	last := len(out)
-	if (len(out) > 0) && (out[last - 1] == "") {
-		out[last - 1] = incl
+	if (len(out) > 0) && (out[last-1] == "") {
+		out[last-1] = incl
 	} else {
 		out = append(out, incl)
 	}
 	out = append(out, "")
-
 
 	err = ioutil.WriteFile(file, []byte(strings.Join(out, "\n")), 755)
 	return err
@@ -175,7 +176,6 @@ func highlightingFile() (string, error) {
 
 	return path, nil
 }
-
 
 func nanorcFile() (string, error) {
 	var path string
@@ -216,7 +216,7 @@ func installHighlighting(f bool) (string, error) {
 }
 
 func init() {
-	rootCmd.AddCommand(gitForNanoCmd)
+	gitCmd.AddCommand(gitForNanoCmd)
 
 	gitForNanoCmd.Flags().BoolP("force", "f", false, "Overwrite existing files")
 }
